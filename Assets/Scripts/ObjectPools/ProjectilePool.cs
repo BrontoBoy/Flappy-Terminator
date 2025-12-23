@@ -1,1 +1,1 @@
-public class ProjectilePool : ObjectPool<Projectile> { }
+public class ProjectilePool : GameObjectPool<Projectile> {}

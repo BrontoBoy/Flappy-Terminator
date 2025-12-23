@@ -32,7 +32,7 @@ public class InputReader : MonoBehaviour
     
     public void ResetAllInput()
     {
-        IsJump = false;
-        IsAttack = false;
+        ResetJump();
+        ResetAttack();
     }
 }

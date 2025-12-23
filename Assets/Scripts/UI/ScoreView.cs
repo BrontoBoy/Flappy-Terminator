@@ -6,6 +6,16 @@ public class ScoreView : MonoBehaviour
     [SerializeField] private ScoreCounter _scoreCounter;
     [SerializeField] private TMP_Text _score;
 
+    
+    private void Start()
+    {
+        if (_scoreCounter != null)
+        {
+            _scoreCounter.ScoreChanged += OnScoreChanged;
+            OnScoreChanged(0); 
+        }
+    }
+    
     private void OnEnable()
     {
         _scoreCounter.ScoreChanged += OnScoreChanged;
@@ -18,6 +28,9 @@ public class ScoreView : MonoBehaviour
 
     private void OnScoreChanged(int score)
     {
-       _score.text = score.ToString();
+        if (_score != null)
+        {
+            _score.text = score.ToString();
+        }
     }
 }

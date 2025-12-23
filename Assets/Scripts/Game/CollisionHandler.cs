@@ -9,7 +9,8 @@ public class CollisionHandler : MonoBehaviour
 
     private void OnValidate()
     {
-        GetComponent<Collider2D>().isTrigger = true;
+        Collider2D collider = GetComponent<Collider2D>();
+        collider.isTrigger = true;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -21,12 +22,8 @@ public class CollisionHandler : MonoBehaviour
         else if (other.TryGetComponent(out Projectile projectile))
         {
             if (projectile.IsOwnedByPlayer() == false)
-            {
                 if (_player != null)
-                {
                     _player.Destroy();
-                }
-            }
         }
     }
 }

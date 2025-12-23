@@ -220,6 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 7989890644316785365, guid: 0752b3c35981a51449471ec955ec3f65, type: 3}
   InitialSize: 10
+  MaxSize: 100
 --- !u!114 &-3985636420519115521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,7 +236,7 @@ MonoBehaviour:
   _moveSpeed: 3
   _attackPoint: {fileID: 8473304422637272414}
   _shootCooldown: 2
-  _projectilePool: {fileID: 2267176646230182414}
+  _enemyProjectilePool: {fileID: 2267176646230182414}
 --- !u!114 &8241531568371271274
 MonoBehaviour:
   m_ObjectHideFlags: 0

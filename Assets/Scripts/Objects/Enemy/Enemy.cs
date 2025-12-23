@@ -6,20 +6,24 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     [SerializeField] private float _moveSpeed = 3f;
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private float _shootCooldown = 2f;
-    [SerializeField] private ProjectilePool _projectilePool;
+    [SerializeField] private ProjectilePool _enemyProjectilePool;
     
     private float _timeSinceLastShot;
     private Rigidbody2D _rigidbody;
-    private ObjectPool<Enemy> _enemyPool;
+    private EnemyPool _enemyPool;
     private bool _destroyedByPlayer = false;
     
     public System.Action<Enemy> Destroyed;
+    
     public bool WasDestroyedByPlayer => _destroyedByPlayer;
     
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        GetComponent<Collider2D>().isTrigger = true;
+        Collider2D collider = GetComponent<Collider2D>();
+        
+        if (collider != null)
+            collider.isTrigger = true;
     }
     
     private void OnEnable()
@@ -38,30 +42,12 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         _rigidbody.linearVelocity = new Vector2(-_moveSpeed, 0);
     }
     
-    private void TryShoot()
-    {
-        _timeSinceLastShot += Time.deltaTime;
         
-        if (_timeSinceLastShot >= _shootCooldown)
-        {
-            Shoot();
-            _timeSinceLastShot = 0f;
-        }
-    }
-    
-    private void Shoot()
+    public void Initialize(EnemyPool enemyPool)
     {
-        if (_projectilePool == null || _attackPoint == null) 
+        if (enemyPool == null) 
             return;
         
-        var projectile = _projectilePool.GetObject();
-        projectile.Pool = _projectilePool;
-        projectile.Initialize(_attackPoint.position, Vector2.left, Quaternion.identity);
-        projectile.SetOwner(gameObject);
-    }
-    
-    public void Initialize(ObjectPool<Enemy> enemyPool)
-    {
         _enemyPool = enemyPool;
     }
     
@@ -83,4 +69,31 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
             gameObject.SetActive(false);
         }
     }
+    
+    private void TryShoot()
+    {
+        _timeSinceLastShot += Time.deltaTime;
+        
+        if (_timeSinceLastShot >= _shootCooldown)
+        {
+            Shoot();
+            _timeSinceLastShot = 0f;
+        }
+    }
+    
+    private void Shoot()
+    {
+        if (_enemyProjectilePool == null || _attackPoint == null) 
+            return;
+        
+        Projectile projectile = _enemyProjectilePool.GetObject();
+        
+        if (projectile == null)
+            return;
+
+        projectile.Pool = _enemyProjectilePool;
+        projectile.Initialize(_attackPoint.position, Vector2.left, Quaternion.identity);
+        projectile.SetOwner(gameObject);
+    }
+
 }

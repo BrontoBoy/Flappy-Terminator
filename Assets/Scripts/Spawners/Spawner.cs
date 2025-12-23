@@ -1,22 +1,35 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehaviour
 {
-    [SerializeField] protected float SpawnRate = 2f;
-    [SerializeField] protected float MinY = -4f;
-    [SerializeField] protected float MaxY = 4f;
-    [SerializeField] protected float SpawnX = 12f;
-    [SerializeField] protected ObjectPool<T> ObjectPool;
+    private const float DefaultSpawnCooldown = 2f;
+    private const float DefaultMinSpawnHeight = -2f;
+    private const float DefaultMaxSpawnHeight = 4f;
+    private const float DefaultSpawnDistance = 12f;
+    protected const float ZeroFloatValue = 0f;
+    
+    [SerializeField] protected float SpawnRate = DefaultSpawnCooldown;
+    [SerializeField] protected float MinY = DefaultMinSpawnHeight;
+    [SerializeField] protected float MaxY = DefaultMaxSpawnHeight;
+    [SerializeField] protected float SpawnX = DefaultSpawnDistance;
+    [SerializeField] protected GameObjectPool<T> ObjectPool;
     
     protected float TimeSinceLastSpawn;
     protected bool IsSpawning = false;
     
     public System.Action<T> ObjectSpawned { get; set; }
+
+    protected virtual void Update()
+    {
+        if (IsSpawning == false)
+            return;
+        
+        UpdateSpawnTimer();
+    }
     
     public virtual void Initialize()
     {
-        TimeSinceLastSpawn = 0f;
+        TimeSinceLastSpawn = ZeroFloatValue;
         IsSpawning = false;
     }
     
@@ -31,26 +44,36 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
         IsSpawning = false;
     }
     
-    protected virtual void Update()
-    {
-        if (IsSpawning == false) 
-            return;
-        
-        TimeSinceLastSpawn += Time.deltaTime;
-        
-        if (TimeSinceLastSpawn >= SpawnRate)
-        {
-            Spawn();
-            TimeSinceLastSpawn = 0f;
-        }
-    }
-    
     protected abstract void Spawn();
     
     protected virtual Vector3 GetRandomSpawnPosition()
     {
-        float randomY = Random.Range(MinY, MaxY);
+        float randomY = GetRandomYPosition();
+        return new Vector3(SpawnX, randomY, ZeroFloatValue);
+    }
+    
+    protected float GetRandomYPosition()
+    {
+        return Random.Range(MinY, MaxY);
+    }
+    
+    protected bool AreSpawnSettingsValid()
+    {
+        bool isMinYValid = MinY < MaxY;
+        bool isSpawnRateValid = SpawnRate > ZeroFloatValue;
+        bool isObjectPoolSet = ObjectPool != null;
         
-        return new Vector3(SpawnX, randomY, 0);
+        return isMinYValid && isSpawnRateValid && isObjectPoolSet;
+    }
+    
+    private void UpdateSpawnTimer()
+    {
+        TimeSinceLastSpawn += Time.deltaTime;
+        
+        if (TimeSinceLastSpawn >= SpawnRate) 
+        {
+            Spawn();
+            TimeSinceLastSpawn = ZeroFloatValue;
+        }
     }
 }

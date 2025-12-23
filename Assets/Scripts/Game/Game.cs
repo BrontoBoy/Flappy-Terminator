@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
+    private const float StoppedTimeScale = 0f;
+    private const float RunningTimeScale = 1f;
+    private const int SingleScorePoint = 1;
+    
     [SerializeField] private Player _player;
     [SerializeField] private StartScreen _startScreen;
     [SerializeField] private EndGameScreen _endGameScreen;
     [SerializeField] private EnemySpawner _enemySpawner;
-
-    private void OnEnable()
+    
+   private void OnEnable()
     {
         _startScreen.PlayButtonClicked += OnPlayButtonClick;
         _endGameScreen.RestartButtonClicked += OnRestartButtonClick;
@@ -33,7 +37,7 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 0;
+        Time.timeScale = StoppedTimeScale;
         _startScreen.Open();
         
         if (_enemySpawner != null)
@@ -51,7 +55,7 @@ public class Game : MonoBehaviour
     {
         if (enemy.WasDestroyedByPlayer)
         {
-            _player.AddScore(1);
+            _player.AddScore(SingleScorePoint);
         }
         
         enemy.Destroyed -= OnEnemyDestroyed;
@@ -59,7 +63,7 @@ public class Game : MonoBehaviour
 
     private void OnGameOver()
     {
-        Time.timeScale = 0;
+        Time.timeScale = StoppedTimeScale;
         
         if (_enemySpawner != null)
         {
@@ -84,7 +88,6 @@ public class Game : MonoBehaviour
     private void StartGame()
     {
         Time.timeScale = 1;
-        CleanupAllObjects();
         
         if (_enemySpawner != null)
         {

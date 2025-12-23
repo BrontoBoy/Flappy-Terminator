@@ -2,7 +2,11 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Mover : MonoBehaviour
-{
+{   private const float ZeroRotationX = 0f;
+    private const float ZeroRotationY = 0f;
+    private const float ZeroRotationZ = 0f;
+    private const float ZeroVelocity = 0f;
+    
     [SerializeField] private float _tapForce;
     [SerializeField] private float _speed;
     [SerializeField] private float _rotationSpeed;
@@ -18,8 +22,8 @@ public class Mover : MonoBehaviour
     {
         _startPosition = transform.position;
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _maxRotation = Quaternion.Euler(0, 0, _maxRotationZ);
-        _minRotation = Quaternion.Euler(0, 0, _minRotationZ);
+        _maxRotation = Quaternion.Euler(ZeroRotationX, ZeroRotationY, _maxRotationZ);
+        _minRotation = Quaternion.Euler(ZeroRotationX, ZeroRotationY, _minRotationZ);
 
         Reset();
     }

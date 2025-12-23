@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ProjectileSpawner : MonoBehaviour
 {
-    [SerializeField] private ProjectilePool _projectilePool;
+    [SerializeField] private ProjectilePool _projectilePool; 
     
     public Projectile SpawnProjectile(Vector3 position, Vector2 direction, Quaternion rotation)
     {
@@ -10,6 +10,10 @@ public class ProjectileSpawner : MonoBehaviour
             return null;
         
         Projectile projectile = _projectilePool.GetObject();
+        
+        if (projectile == null) 
+            return null;
+        
         projectile.Pool = _projectilePool;
         projectile.Initialize(position, direction, rotation);
         

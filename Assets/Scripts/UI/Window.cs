@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 public abstract class Window : MonoBehaviour
 {
+    protected const float VisibleAlpha = 1f;
+    protected const float HiddenAlpha = 0f;
+    
     [SerializeField] private CanvasGroup _windowGroup;
     [SerializeField] private Button _actionButton;
 
@@ -11,12 +14,14 @@ public abstract class Window : MonoBehaviour
 
     private void OnEnable()
     {
-        _actionButton.onClick.AddListener(OnButtonClick);
+        if (_actionButton != null)
+            _actionButton.onClick.AddListener(OnButtonClick);
     }
 
     private void OnDisable()
     {
-        _actionButton.onClick.RemoveListener(OnButtonClick);
+        if (_actionButton != null)
+            _actionButton.onClick.RemoveListener(OnButtonClick);
     }
 
     protected abstract void OnButtonClick();
