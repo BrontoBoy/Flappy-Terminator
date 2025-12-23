@@ -29,4 +29,10 @@ public class InputReader : MonoBehaviour
     {
         IsAttack = false;
     }
+    
+    public void ResetAllInput()
+    {
+        IsJump = false;
+        IsAttack = false;
+    }
 }

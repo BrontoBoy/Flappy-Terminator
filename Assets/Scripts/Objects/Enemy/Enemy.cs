@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class Enemy : MonoBehaviour, IDestructible, IInteractable
 {
-    private const float DestroyBoundaryX = -15f;
-    
     [SerializeField] private float _moveSpeed = 3f;
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private float _shootCooldown = 2f;
@@ -13,8 +11,10 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     private float _timeSinceLastShot;
     private Rigidbody2D _rigidbody;
     private ObjectPool<Enemy> _enemyPool;
+    private bool _destroyedByPlayer = false;
     
     public System.Action<Enemy> Destroyed;
+    public bool WasDestroyedByPlayer => _destroyedByPlayer;
     
     private void Awake()
     {
@@ -25,16 +25,12 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     private void OnEnable()
     {
         _timeSinceLastShot = Random.Range(0f, _shootCooldown);
+        _destroyedByPlayer = false;
     }
     
     private void Update()
     {
         TryShoot();
-        
-        if (transform.position.x < DestroyBoundaryX)
-        {
-            Destroy();
-        }
     }
     
     private void FixedUpdate()
@@ -61,11 +57,17 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         var projectile = _projectilePool.GetObject();
         projectile.Pool = _projectilePool;
         projectile.Initialize(_attackPoint.position, Vector2.left, Quaternion.identity);
+        projectile.SetOwner(gameObject);
     }
     
     public void Initialize(ObjectPool<Enemy> enemyPool)
     {
         _enemyPool = enemyPool;
+    }
+    
+    public void MarkAsDestroyedByPlayer()
+    {
+        _destroyedByPlayer = true;
     }
     
     public void Destroy()

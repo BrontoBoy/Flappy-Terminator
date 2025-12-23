@@ -49,7 +49,11 @@ public class Game : MonoBehaviour
     
     private void OnEnemyDestroyed(Enemy enemy)
     {
-        _player.AddScore(1);
+        if (enemy.WasDestroyedByPlayer)
+        {
+            _player.AddScore(1);
+        }
+        
         enemy.Destroyed -= OnEnemyDestroyed;
     }
 
@@ -80,10 +84,12 @@ public class Game : MonoBehaviour
     private void StartGame()
     {
         Time.timeScale = 1;
+        CleanupAllObjects();
         
         if (_enemySpawner != null)
         {
             _enemySpawner.ReturnAllObjects();
+            _enemySpawner.StopSpawning();
             _enemySpawner.StartSpawning();
         }
         

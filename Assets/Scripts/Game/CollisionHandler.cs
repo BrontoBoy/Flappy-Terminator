@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField] private Player _player; 
+    
     public event Action<IInteractable> CollisionDetected;
 
     private void OnValidate()
@@ -15,6 +17,16 @@ public class CollisionHandler : MonoBehaviour
         if (other.TryGetComponent(out IInteractable interactable))
         {
             CollisionDetected?.Invoke(interactable);
+        }
+        else if (other.TryGetComponent(out Projectile projectile))
+        {
+            if (projectile.IsOwnedByPlayer() == false)
+            {
+                if (_player != null)
+                {
+                    _player.Destroy();
+                }
+            }
         }
     }
 }

@@ -3,16 +3,24 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class Projectile : MonoBehaviour, IDestructible
 {
-    private const float DestroyBoundaryX = 20f;
-    private const float DestroyBoundaryY = 15f;
-    
     [SerializeField] private float _speed = 10f;
     [SerializeField] private LayerMask _targetLayer;
     
     private Rigidbody2D _rigidbody;
     private ProjectilePool _pool;
+    private GameObject _owner;
     
     public ProjectilePool Pool { set { _pool = value; } }
+    
+    public void SetOwner(GameObject owner)
+    {
+        _owner = owner;
+    }
+    
+    public bool IsOwnedByPlayer()
+    {
+        return _owner != null && _owner.CompareTag("Player");
+    }
     
     private void Awake()
     {
@@ -27,21 +35,22 @@ public class Projectile : MonoBehaviour, IDestructible
         _rigidbody.linearVelocity = direction.normalized * _speed;
     }
     
-    private void Update()
-    {
-        if (transform.position.x < -DestroyBoundaryX || transform.position.x > DestroyBoundaryX ||
-            transform.position.y < -DestroyBoundaryY || transform.position.y > DestroyBoundaryY)
-        {
-            Destroy();
-        }
-    }
-    
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_owner != null && other.gameObject == _owner)
+        {
+            return;
+        }
+        
         if (((1 << other.gameObject.layer) & _targetLayer) != 0)
         {
             if (other.TryGetComponent(out IDestructible destructible))
             {
+                if (destructible is Enemy enemy && IsOwnedByPlayer())
+                {
+                    enemy.MarkAsDestroyedByPlayer();
+                }
+                
                 destructible.Destroy();
             }
             

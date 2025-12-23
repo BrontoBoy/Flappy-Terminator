@@ -122,5 +122,6 @@ public class Player : MonoBehaviour, IDestructible
     {
         _scoreCounter.Reset();
         _mover.Reset();
+        _inputReader.ResetAllInput();
     }
 }

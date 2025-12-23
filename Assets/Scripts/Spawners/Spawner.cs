@@ -47,7 +47,7 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     
     protected abstract void Spawn();
     
-    protected Vector3 GetRandomSpawnPosition()
+    protected virtual Vector3 GetRandomSpawnPosition()
     {
         float randomY = Random.Range(MinY, MaxY);
         
