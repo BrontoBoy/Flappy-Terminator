@@ -2,11 +2,12 @@ using UnityEngine;
 
 public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehaviour
 {
+    protected const float ZeroFloatValue = 0f;
+    
     private const float DefaultSpawnCooldown = 2f;
     private const float DefaultMinSpawnHeight = -2f;
     private const float DefaultMaxSpawnHeight = 4f;
     private const float DefaultSpawnDistance = 12f;
-    protected const float ZeroFloatValue = 0f;
     
     [SerializeField] protected float SpawnRate = DefaultSpawnCooldown;
     [SerializeField] protected float MinY = DefaultMinSpawnHeight;

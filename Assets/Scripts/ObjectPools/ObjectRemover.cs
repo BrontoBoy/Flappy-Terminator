@@ -28,9 +28,7 @@ public class ObjectRemover : MonoBehaviour
         
         CalculateBounds();
         
-        bool isObjectOutOfBounds = IsObjectOutOfBounds();
-        
-        if (isObjectOutOfBounds)
+        if (IsObjectOutOfBounds())
             Destroy();
     }
     

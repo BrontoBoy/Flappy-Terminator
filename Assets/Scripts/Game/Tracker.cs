@@ -5,7 +5,7 @@ public class Tracker : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private float _xOffset;
     
-    private void Update()
+    private void LateUpdate()
     {
         if (_player == null)
             return;
