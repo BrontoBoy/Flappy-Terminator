@@ -17,6 +17,7 @@ public class ObjectRemover : MonoBehaviour
     private void Start()
     {
         _mainCamera = Camera.main;
+        
         CalculateBounds();
     }
     
@@ -29,22 +30,8 @@ public class ObjectRemover : MonoBehaviour
         
         bool isObjectOutOfBounds = IsObjectOutOfBounds();
         
-        if (isObjectOutOfBounds == true)
+        if (isObjectOutOfBounds)
             Destroy();
-    }
-    
-    public void ForceDestroy()
-    {
-        Destroy();
-    }
-    
-    public static float CalculateRecommendedOffset(Camera camera)
-    {
-        if (camera == null)
-            return DefaultDestroyOffset;
-        
-        float cameraHeight = CameraHeightMultiplier * camera.orthographicSize;
-        return cameraHeight * CameraHeightMultiplier;
     }
     
     private void CalculateBounds()
@@ -76,13 +63,22 @@ public class ObjectRemover : MonoBehaviour
     private void Destroy()
     {
         
-        if (TryGetComponent<IDestructible>(out IDestructible destructible))
+        if (TryGetComponent(out IDestructible destructible))
         {
             destructible.Destroy();
         }
         else
         {
-            gameObject.SetActive(false);
+            Enemy enemy = GetComponent<Enemy>();
+            
+            if (enemy != null)
+            {
+                enemy.Destroy();
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

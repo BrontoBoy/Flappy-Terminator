@@ -15,13 +15,13 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     [SerializeField] protected GameObjectPool<T> ObjectPool;
     
     protected float TimeSinceLastSpawn;
-    protected bool IsSpawning = false;
+    protected bool IsSpawningActive = false;
     
     public System.Action<T> ObjectSpawned { get; set; }
 
     protected virtual void Update()
     {
-        if (IsSpawning == false)
+        if (IsSpawningActive == false)
             return;
         
         UpdateSpawnTimer();
@@ -30,18 +30,18 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     public virtual void Initialize()
     {
         TimeSinceLastSpawn = ZeroFloatValue;
-        IsSpawning = false;
+        IsSpawningActive = false;
     }
     
     public virtual void StartSpawning()
     {
-        IsSpawning = true;
+        IsSpawningActive = true;
         TimeSinceLastSpawn = SpawnRate;
     }
     
     public virtual void StopSpawning()
     {
-        IsSpawning = false;
+        IsSpawningActive = false;
     }
     
     protected abstract void Spawn();
@@ -49,6 +49,7 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     protected virtual Vector3 GetRandomSpawnPosition()
     {
         float randomY = GetRandomYPosition();
+        
         return new Vector3(SpawnX, randomY, ZeroFloatValue);
     }
     

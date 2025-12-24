@@ -6,22 +6,12 @@ public class StartScreen : Window
 
     public override void Close()
     {
-        if (WindowGroup != null)
-        {
-            WindowGroup.alpha = HiddenAlpha;
-            WindowGroup.interactable = false;
-            WindowGroup.blocksRaycasts = false;
-        }
+        HideWindow(); 
     }
 
     public override void Open()
     {
-        if (WindowGroup != null)
-        {
-            WindowGroup.alpha = VisibleAlpha;
-            WindowGroup.interactable = true;
-            WindowGroup.blocksRaycasts = true;
-        }
+        ShowWindow(); 
     }
 
     protected override void OnButtonClick()

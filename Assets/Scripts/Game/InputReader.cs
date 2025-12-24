@@ -10,14 +10,10 @@ public class InputReader : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-        {
             IsJump = true;
-        }
         
         if (Input.GetMouseButtonDown(AttackMouseButtonIndex))
-        {
             IsAttack = true;
-        }
     }
     
     public void ResetJump()

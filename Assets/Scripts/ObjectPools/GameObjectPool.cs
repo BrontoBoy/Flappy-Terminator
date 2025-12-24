@@ -14,9 +14,7 @@ public class GameObjectPool<T> : MonoBehaviour where T : MonoBehaviour
     protected virtual void Awake()
     {
         if (Prefab == null)
-        {
             return;
-        }
         
         InitializePool();
     }
@@ -29,9 +27,7 @@ public class GameObjectPool<T> : MonoBehaviour where T : MonoBehaviour
     public virtual void ReturnObject(T item)
     {
         if (item == null)
-        {
             return;
-        }
         
         Pool.Release(item);
     }
@@ -43,9 +39,7 @@ public class GameObjectPool<T> : MonoBehaviour where T : MonoBehaviour
         foreach (T item in activeCopy)
         {
             if (item != null && item.gameObject.activeInHierarchy)
-            {
                 ReturnObject(item);
-            }
         }
         
         ActiveObjects.Clear();

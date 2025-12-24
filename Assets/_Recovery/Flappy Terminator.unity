@@ -686,7 +686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620bdcc2c26bc074a9b917ec3790fc74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1988842268}
+  _player: {fileID: 1988842268}
   _xOffset: 0
 --- !u!114 &519420034
 MonoBehaviour:
@@ -704,6 +704,7 @@ MonoBehaviour:
   _startScreen: {fileID: 1825567880}
   _endGameScreen: {fileID: 1483598709}
   _enemySpawner: {fileID: 519420036}
+  _scoreCounter: {fileID: 1988842270}
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -718,6 +719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: -3985636420519115521, guid: 40ba6efad059646489d66ec739d5cc10, type: 3}
   InitialSize: 10
+  MaxSize: 100
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,11 +733,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpawnRate: 2
-  MinY: -4
+  MinY: -3
   MaxY: 4
   SpawnX: 12
   ObjectPool: {fileID: 519420035}
-  _camera: {fileID: 0}
+  _spawnDistanceFromPlayer: 15
   _player: {fileID: 1988842268}
 --- !u!4 &602370262 stripped
 Transform:
@@ -1229,6 +1231,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AttackPoint
       objectReference: {fileID: 0}
+    - target: {fileID: 5590026901350924056, guid: 28199471ae487164f8ccdbb75363f69b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7373675630964848976, guid: 28199471ae487164f8ccdbb75363f69b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
@@ -1388,7 +1394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1216162864}
   - component: {fileID: 1216162863}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlayerView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1889,7 +1895,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _windowGroup: {fileID: 1483598706}
-  _actionButton: {fileID: 1463748932}
+  ActionButton: {fileID: 1463748932}
 --- !u!1 &1575803087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2280,7 +2286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _windowGroup: {fileID: 1825567879}
-  _actionButton: {fileID: 1295379271}
+  ActionButton: {fileID: 1295379271}
 --- !u!1 &1868270342
 GameObject:
   m_ObjectHideFlags: 0
@@ -2332,7 +2338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreCounter: {fileID: 1988842270}
-  _score: {fileID: 1868270345}
+  _scoreValueText: {fileID: 1868270345}
 --- !u!114 &1868270345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2452,7 +2458,7 @@ GameObject:
   - component: {fileID: 1988842277}
   - component: {fileID: 1988842276}
   - component: {fileID: 1988842275}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2599,6 +2605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 836351238740039466, guid: 9598ccf672bc5c64884e70bf52302135, type: 3}
   InitialSize: 10
+  MaxSize: 100
 --- !u!114 &1988842276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2612,6 +2619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _projectilePool: {fileID: 1988842275}
+  _owner: {fileID: 0}
 --- !u!58 &1988842277
 CircleCollider2D:
   m_ObjectHideFlags: 0

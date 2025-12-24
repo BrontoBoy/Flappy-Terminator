@@ -18,9 +18,6 @@ public class Player : MonoBehaviour, IDestructible
 
     public event Action GameOver;
     
-    private bool _isAlive = true;
-    public bool IsAlive => _isAlive; 
-
     private void Awake()
     {
         _inputReader = GetComponent<InputReader>();
@@ -42,19 +39,25 @@ public class Player : MonoBehaviour, IDestructible
     
     private void Update()
     {
-        if (_isAlive == false)
-            return;
-        
         if (transform.position.y > _maxY)
             ClampToUpperBound();
     }
     
     private void FixedUpdate()
     {
-        if (_isAlive == false)
-            return;
-        
         UpdateMovement();
+    }
+    
+    public void Destroy()
+    {
+        GameOver?.Invoke(); 
+    }
+    
+    public void Reset()
+    {
+        _scoreCounter?.Reset();
+        _mover?.Reset();
+        _inputReader?.ResetAllInput();
     }
     
     private void UpdateMovement()
@@ -71,13 +74,13 @@ public class Player : MonoBehaviour, IDestructible
         transform.position = position;
         Rigidbody2D rigidbody = GetComponent<Rigidbody2D>();
         
+        if (rigidbody != null && rigidbody.linearVelocity.y > 0)
         {
             Vector2 velocity = rigidbody.linearVelocity;
             velocity.y = 0;
             rigidbody.linearVelocity = velocity;
         }
     }
-
     
     private void HandleMovement()
     {
@@ -106,43 +109,12 @@ public class Player : MonoBehaviour, IDestructible
     {
         if (interactable is Enemy enemy)
         {
+            enemy.Destroy();
             Destroy();
         }
         else if (interactable is Ground ground)
         {
             Destroy();
         }
-    }
-    
-    public void Destroy()
-    {
-        if (_isAlive == false)
-            return;
-        
-        _isAlive = false;
-        GameOver?.Invoke(); 
-    }
-
-    public void AddScore(int points = 1)
-    {
-        if (_scoreCounter == null || _isAlive == false)
-            return;
-        
-        for (int i = 0; i < points; i++) 
-            _scoreCounter.Add();
-    }
-    
-    public void Reset()
-    {
-        _isAlive = true;
-        
-        if (_scoreCounter != null)
-            _scoreCounter.Reset();
-        
-        if (_mover != null)
-            _mover.Reset();
-        
-        if (_inputReader != null)
-            _inputReader.ResetAllInput();
     }
 }

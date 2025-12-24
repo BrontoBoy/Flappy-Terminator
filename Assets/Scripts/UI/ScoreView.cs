@@ -4,16 +4,17 @@ using UnityEngine;
 public class ScoreView : MonoBehaviour
 {
     [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private TMP_Text _score;
-
+    [SerializeField] private TMP_Text _scoreValueText;
+    
+    private void Awake()
+    {
+        if (_scoreCounter != null)
+            _scoreCounter.ScoreChanged += OnScoreChanged;
+    }
     
     private void Start()
     {
-        if (_scoreCounter != null)
-        {
-            _scoreCounter.ScoreChanged += OnScoreChanged;
-            OnScoreChanged(0); 
-        }
+        OnScoreChanged(0); 
     }
     
     private void OnEnable()
@@ -28,9 +29,7 @@ public class ScoreView : MonoBehaviour
 
     private void OnScoreChanged(int score)
     {
-        if (_score != null)
-        {
-            _score.text = score.ToString();
-        }
+        if (_scoreValueText != null)
+            _scoreValueText.text = score.ToString();
     }
 }

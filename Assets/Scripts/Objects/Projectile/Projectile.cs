@@ -12,14 +12,9 @@ public class Projectile : MonoBehaviour, IDestructible
     private ProjectilePool _pool;
     private Player _playerOwner;
     private GameObject _owner;
+    private bool _hasHit = false;
     
-    public ProjectilePool Pool 
-    { 
-        set 
-        { 
-            _pool = value; 
-        } 
-    }
+    public ProjectilePool Pool { set { _pool = value; } }
     
     private void Awake()
     {
@@ -52,6 +47,8 @@ public class Projectile : MonoBehaviour, IDestructible
     
     public void Initialize(Vector2 position, Vector2 direction, Quaternion rotation)
     {
+        _hasHit = false;
+        
         if (_rigidbody == null)
             return;
         
@@ -82,33 +79,28 @@ public class Projectile : MonoBehaviour, IDestructible
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_owner != null && other.gameObject == _owner)
-        {
+        if (enabled == false) 
             return;
-        }
         
-        bool isTargetLayer = IsObjectInTargetLayer(other.gameObject);
+        if (_hasHit) 
+            return;
         
-        if (isTargetLayer)
+        if (_owner != null && other.gameObject == _owner)
+            return;
+        
+        if (((1 << other.gameObject.layer) & _targetLayer) != 0)
         {
+            _hasHit = true;
+            
             if (other.TryGetComponent(out IDestructible destructible))
             {
                 if (destructible is Enemy enemy && IsOwnedByPlayer())
-                {
                     enemy.MarkAsDestroyedByPlayer();
-                }
                 
                 destructible.Destroy();
             }
             
             Destroy();
         }
-    }
-    
-    private bool IsObjectInTargetLayer(GameObject targetObject)
-    {
-        int objectLayerMask = 1 << targetObject.layer;
-        
-        return (objectLayerMask & _targetLayer) != 0;
     }
 }

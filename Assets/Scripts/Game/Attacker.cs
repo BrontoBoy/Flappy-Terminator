@@ -7,6 +7,12 @@ public class Attacker : MonoBehaviour
     [SerializeField] private ProjectileSpawner _projectileSpawner;
     
     private float _lastAttackTime;
+    private Player _player;
+    
+    private void Awake()
+    {
+        _player = GetComponent<Player>();
+    }
     
     public void Attack()
     {
@@ -16,12 +22,11 @@ public class Attacker : MonoBehaviour
         if (_projectileSpawner == null || _attackPoint == null)
             return;
         
-        _projectileSpawner.SpawnProjectile(_attackPoint.position,_attackPoint.right, _attackPoint.rotation);
+        Projectile projectile =_projectileSpawner.SpawnProjectile(_attackPoint.position,_attackPoint.right, _attackPoint.rotation);
+        
+        if (projectile != null && _player != null)
+            projectile.SetOwner(_player.gameObject);
+        
         _lastAttackTime = Time.time;
-    }
-    
-    public bool IsReadyToAttack()
-    {
-        return Time.time - _lastAttackTime >= _cooldown;
     }
 }

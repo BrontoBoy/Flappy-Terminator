@@ -2,10 +2,9 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Mover : MonoBehaviour
-{   private const float ZeroRotationX = 0f;
+{   
+    private const float ZeroRotationX = 0f;
     private const float ZeroRotationY = 0f;
-    private const float ZeroRotationZ = 0f;
-    private const float ZeroVelocity = 0f;
     
     [SerializeField] private float _tapForce;
     [SerializeField] private float _speed;

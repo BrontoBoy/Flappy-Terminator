@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public abstract class Window : MonoBehaviour
@@ -7,26 +8,43 @@ public abstract class Window : MonoBehaviour
     protected const float HiddenAlpha = 0f;
     
     [SerializeField] private CanvasGroup _windowGroup;
-    [SerializeField] private Button _actionButton;
+    [SerializeField] protected Button ActionButton;
 
     protected CanvasGroup WindowGroup => _windowGroup;
-    protected Button ActionButton=> _actionButton;
 
     private void OnEnable()
     {
-        if (_actionButton != null)
-            _actionButton.onClick.AddListener(OnButtonClick);
+        if (ActionButton != null)
+            ActionButton.onClick.AddListener(OnButtonClick);
     }
 
     private void OnDisable()
     {
-        if (_actionButton != null)
-            _actionButton.onClick.RemoveListener(OnButtonClick);
+        if (ActionButton != null)
+            ActionButton.onClick.RemoveListener(OnButtonClick);
     }
-
-    protected abstract void OnButtonClick();
-
+    
     public abstract void Open();
     public abstract void Close();
+    protected abstract void OnButtonClick();
+
+    protected void ShowWindow()
+    {
+        if (WindowGroup != null)
+        {
+            WindowGroup.alpha = VisibleAlpha;
+            WindowGroup.interactable = true;
+            WindowGroup.blocksRaycasts = true;
+        }
+    }
     
+    protected void HideWindow()
+    {
+        if (WindowGroup != null)
+        {
+            WindowGroup.alpha = HiddenAlpha;
+            WindowGroup.interactable = false;
+            WindowGroup.blocksRaycasts = false;
+        }
+    }
 }

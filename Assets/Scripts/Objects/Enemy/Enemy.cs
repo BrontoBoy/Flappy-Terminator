@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class Enemy : MonoBehaviour, IDestructible, IInteractable
@@ -11,11 +13,9 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     private float _timeSinceLastShot;
     private Rigidbody2D _rigidbody;
     private EnemyPool _enemyPool;
-    private bool _destroyedByPlayer = false;
+    private bool _isScoreAlreadyAdded = false;
     
-    public System.Action<Enemy> Destroyed;
-    
-    public bool WasDestroyedByPlayer => _destroyedByPlayer;
+    public event Action<Enemy> DestroyedByPlayer;
     
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     private void OnEnable()
     {
         _timeSinceLastShot = Random.Range(0f, _shootCooldown);
-        _destroyedByPlayer = false;
+        _isScoreAlreadyAdded = false;
     }
     
     private void Update()
@@ -42,7 +42,6 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         _rigidbody.linearVelocity = new Vector2(-_moveSpeed, 0);
     }
     
-        
     public void Initialize(EnemyPool enemyPool)
     {
         if (enemyPool == null) 
@@ -53,13 +52,18 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     
     public void MarkAsDestroyedByPlayer()
     {
-        _destroyedByPlayer = true;
+        if (gameObject.activeInHierarchy == false) 
+            return;
+        
+        if (_isScoreAlreadyAdded) 
+            return;
+        
+        _isScoreAlreadyAdded = true;
+        DestroyedByPlayer?.Invoke(this);
     }
     
     public void Destroy()
     {
-        Destroyed?.Invoke(this);
-        
         if (_enemyPool != null)
         {
             _enemyPool.ReturnObject(this);
@@ -77,6 +81,7 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         if (_timeSinceLastShot >= _shootCooldown)
         {
             Shoot();
+            
             _timeSinceLastShot = 0f;
         }
     }
@@ -95,5 +100,4 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         projectile.Initialize(_attackPoint.position, Vector2.left, Quaternion.identity);
         projectile.SetOwner(gameObject);
     }
-
 }

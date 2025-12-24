@@ -11,10 +11,6 @@ public class ProjectileSpawner : MonoBehaviour
         
         Projectile projectile = _projectilePool.GetObject();
         
-        if (projectile == null) 
-            return null;
-        
-        projectile.Pool = _projectilePool;
         projectile.Initialize(position, direction, rotation);
         
         return projectile;

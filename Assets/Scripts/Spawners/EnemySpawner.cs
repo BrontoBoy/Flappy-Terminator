@@ -10,9 +10,7 @@ public class EnemySpawner : Spawner<Enemy>
     public void ReturnAllObjects()
     {
         if (ObjectPool != null)
-        {
             ObjectPool.ReturnAll();
-        }
     }
     
     protected override void Spawn()

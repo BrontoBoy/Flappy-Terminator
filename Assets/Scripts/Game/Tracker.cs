@@ -4,14 +4,6 @@ public class Tracker : MonoBehaviour
 {
     [SerializeField] private Player _player;
     [SerializeField] private float _xOffset;
-
-    private float _initialCameraX;
-    
-    private void Start()
-    {
-        if (_player != null)
-            _initialCameraX = transform.position.x;
-    }
     
     private void Update()
     {

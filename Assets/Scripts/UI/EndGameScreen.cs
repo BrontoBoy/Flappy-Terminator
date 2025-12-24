@@ -4,24 +4,25 @@ public class EndGameScreen : Window
 {
     public event Action RestartButtonClicked;
 
+    private void Start()
+    {
+        Close();
+    }
+    
     public override void Close()
     {
-        if (WindowGroup != null)
-        {
-            WindowGroup.alpha = HiddenAlpha;
-            WindowGroup.interactable = false;
-            WindowGroup.blocksRaycasts = false;
-        }
+        HideWindow();
+        
+        if (ActionButton != null)
+            ActionButton.interactable = false;
     }
 
     public override void Open()
     {
-        if (WindowGroup != null)
-        {
-            WindowGroup.alpha = VisibleAlpha;
-            WindowGroup.interactable = true;
-            WindowGroup.blocksRaycasts = true;
-        }
+        ShowWindow();
+        
+        if (ActionButton != null)
+            ActionButton.interactable = true;
     }
 
     protected override void OnButtonClick()
