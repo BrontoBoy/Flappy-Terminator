@@ -99,9 +99,6 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
             return;
         
         Projectile projectile = _enemyProjectileSpawner.SpawnObject(_attackPoint.position, Vector2.left, Quaternion.identity);
-        
-        if (projectile == null)
-            return;
     }
     
     private void OnTriggerEnter2D(Collider2D other)

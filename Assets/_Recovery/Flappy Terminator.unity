@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 251859734}
   - component: {fileID: 251859735}
   - component: {fileID: 251859736}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Ground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 346085004}
   - component: {fileID: 346085005}
   - component: {fileID: 346085006}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -882,8 +882,9 @@ MonoBehaviour:
   _player: {fileID: 1988842268}
   _startScreen: {fileID: 1825567880}
   _endGameScreen: {fileID: 1483598709}
-  _enemySpawner: {fileID: 519420036}
   _scoreCounter: {fileID: 1988842270}
+  _enemySpawner: {fileID: 519420036}
+  _projectileSpawner: {fileID: -4409757413080913638, guid: 40ba6efad059646489d66ec739d5cc10, type: 3}
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -935,7 +936,7 @@ GameObject:
   - component: {fileID: 622836041}
   - component: {fileID: 622836043}
   - component: {fileID: 622836042}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Ground (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1237,7 +1238,7 @@ GameObject:
   - component: {fileID: 1161219869}
   - component: {fileID: 1161219871}
   - component: {fileID: 1161219870}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Ground (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -90,11 +90,11 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
         return ObjectPool.GetObject();
     }
     
-    protected virtual void InitializeObject(T gameObjec) { }
+    protected virtual void InitializeObject(T gameObject) { }
     
-    protected virtual void NotifyObjectSpawned(T gameObjec)
+    protected virtual void NotifyObjectSpawned(T gameObject)
     {
-        ObjectSpawned?.Invoke(gameObjec);
+        ObjectSpawned?.Invoke(gameObject);
     }
     
     protected virtual bool CanSpawn()

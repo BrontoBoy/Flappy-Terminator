@@ -1,23 +1,38 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    private const float StoppedTimeScale = 0f;
-    private const float TimeScale = 1f;
+    private const float PausedTimeScale = 0f;
+    private const float PlayTimeScale = 1f;
     
     [SerializeField] private Player _player;
     [SerializeField] private StartScreen _startScreen;
     [SerializeField] private EndGameScreen _endGameScreen;
-    [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private ScoreCounter _scoreCounter;
+    [SerializeField] private EnemySpawner _enemySpawner;
+    [SerializeField] private ProjectileSpawner _projectileSpawner;
+    
+    private List<ISpawner> _spawners = new List<ISpawner>();
     
     private void Start()
     {
-        Time.timeScale = StoppedTimeScale;
+        Time.timeScale = PausedTimeScale;
         _startScreen.Open();
+
+        _spawners.Clear();
         
         if (_enemySpawner != null)
-            _enemySpawner.Initialize();
+            _spawners.Add(_enemySpawner);
+            
+        if (_projectileSpawner != null)
+            _spawners.Add(_projectileSpawner);
+        
+        foreach (ISpawner spawner in _spawners)
+        {
+            if (spawner != null)
+                spawner.Initialize();
+        }
     }
     
    private void OnEnable()
@@ -26,8 +41,13 @@ public class Game : MonoBehaviour
         _endGameScreen.RestartButtonClicked += OnRestartButtonClick;
         _player.GameOver += OnGameOver;
         
-        if (_enemySpawner != null)
-            _enemySpawner.ObjectSpawned += OnEnemySpawned;
+        foreach (ISpawner spawner in _spawners)
+        {
+            if (spawner is EnemySpawner enemySpawner)
+            {
+                enemySpawner.ObjectSpawned += OnEnemySpawned;
+            }
+        }
     }
 
     private void OnDisable()
@@ -36,13 +56,17 @@ public class Game : MonoBehaviour
         _endGameScreen.RestartButtonClicked -= OnRestartButtonClick;
         _player.GameOver -= OnGameOver;
         
-        if (_enemySpawner != null)
-            _enemySpawner.ObjectSpawned -= OnEnemySpawned;
+        foreach (ISpawner spawner in _spawners)
+        {
+            if (spawner is EnemySpawner enemySpawner)
+            {
+                enemySpawner.ObjectSpawned -= OnEnemySpawned;
+            }
+        }
     }
     
     private void OnEnemySpawned(Enemy enemy)
     {
-        enemy.DestroyedByPlayer -= OnEnemyDestroyedByPlayer;
         enemy.DestroyedByPlayer += OnEnemyDestroyedByPlayer;
     }
     
@@ -50,16 +74,17 @@ public class Game : MonoBehaviour
     {
         if (_scoreCounter != null)
             _scoreCounter.Add();
-        
-        enemy.DestroyedByPlayer -= OnEnemyDestroyedByPlayer;
     }
 
     private void OnGameOver()
     {
-        Time.timeScale = StoppedTimeScale;
+        Time.timeScale = PausedTimeScale;
         
-        if (_enemySpawner != null)
-            _enemySpawner.StopSpawning();
+        foreach (ISpawner spawner in _spawners)
+        {
+            if (spawner != null)
+                spawner.StopSpawning();
+        }
         
         _endGameScreen.Open();
     }
@@ -78,12 +103,20 @@ public class Game : MonoBehaviour
 
     private void StartGame()
     {
-        Time.timeScale = TimeScale;
+        Time.timeScale = PlayTimeScale;
         
-        if (_enemySpawner != null)
+        foreach (ISpawner spawner in _spawners)
         {
-            _enemySpawner.ReturnAllObjects();
-            _enemySpawner.StartSpawning();
+            if (spawner != null)
+            {
+                spawner.StopSpawning();
+                spawner.ReturnAllObjects();
+                
+                if (spawner is EnemySpawner)
+                {
+                    spawner.StartSpawning();
+                }
+            }
         }
         
         _player.Reset();

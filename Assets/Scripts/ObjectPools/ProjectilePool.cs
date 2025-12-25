@@ -20,6 +20,14 @@ public class ProjectilePool : GameObjectPool<Projectile>
         return projectile;
     }
     
+    protected override void OnTakeFromPool(Projectile item)
+    {
+        base.OnTakeFromPool(item);
+        
+        item.Destroyed -= OnProjectileDestroyed;
+        item.Destroyed += OnProjectileDestroyed;
+    }
+    
     protected override void OnReturnedToPool(Projectile projectile)
     {
         if (projectile != null)
