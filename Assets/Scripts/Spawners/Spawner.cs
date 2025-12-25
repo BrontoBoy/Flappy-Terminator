@@ -14,15 +14,21 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     [SerializeField] protected float MaxY = DefaultMaxSpawnHeight;
     [SerializeField] protected float SpawnX = DefaultSpawnDistance;
     [SerializeField] protected GameObjectPool<T> ObjectPool;
+    [SerializeField] protected bool UseAutoSpawn = true;
     
     protected float TimeSinceLastSpawn;
     protected bool IsSpawningActive = false;
     
     public System.Action<T> ObjectSpawned { get; set; }
 
+    protected virtual void Start()
+    {
+        Initialize();
+    }
+    
     protected virtual void Update()
     {
-        if (IsSpawningActive == false)
+        if (IsSpawningActive == false|| UseAutoSpawn == false || ObjectPool == null)
             return;
         
         UpdateSpawnTimer();
@@ -45,7 +51,56 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
         IsSpawningActive = false;
     }
     
-    protected abstract void Spawn();
+    public void ReturnAllObjects()
+    {
+        if (ObjectPool != null)
+            ObjectPool.ReturnAll();
+    }
+    
+    public virtual T SpawnObject(Vector3 position, Vector2 direction, Quaternion rotation)
+    {
+        if (ObjectPool == null || IsSpawningActive == false)
+            return null;
+        
+        T gameObject = ObjectPool.GetObject();
+        
+        if (gameObject is Projectile projectile)
+        {
+            projectile.Initialize(position, direction, rotation);
+        }
+        
+        return gameObject;
+    }
+    
+    protected virtual void Spawn()
+    {
+        if (CanSpawn() == false)
+            return;
+        
+        T gameObject = CreateObject();
+        Vector3 spawnPosition = GetRandomSpawnPosition();
+        gameObject.transform.position = spawnPosition;
+        
+        InitializeObject(gameObject);
+        NotifyObjectSpawned(gameObject);
+    }
+    
+    protected virtual T CreateObject()
+    {
+        return ObjectPool.GetObject();
+    }
+    
+    protected virtual void InitializeObject(T gameObjec) { }
+    
+    protected virtual void NotifyObjectSpawned(T gameObjec)
+    {
+        ObjectSpawned?.Invoke(gameObjec);
+    }
+    
+    protected virtual bool CanSpawn()
+    {
+        return AreSpawnSettingsValid();
+    }
     
     protected virtual Vector3 GetRandomSpawnPosition()
     {

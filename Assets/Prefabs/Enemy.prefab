@@ -105,7 +105,6 @@ GameObject:
   - component: {fileID: -4409757413080913638}
   - component: {fileID: 2267176646230182414}
   - component: {fileID: -3985636420519115521}
-  - component: {fileID: 8241531568371271274}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Untagged
@@ -205,7 +204,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e9fe3f08efa3d47bf964672dd634e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectilePool: {fileID: 2267176646230182414}
+  SpawnRate: 2
+  MinY: -2
+  MaxY: 4
+  SpawnX: 12
+  ObjectPool: {fileID: 2267176646230182414}
+  UseAutoSpawn: 1
 --- !u!114 &2267176646230182414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,20 +240,9 @@ MonoBehaviour:
   _moveSpeed: 3
   _attackPoint: {fileID: 8473304422637272414}
   _shootCooldown: 2
-  _enemyProjectilePool: {fileID: 2267176646230182414}
---- !u!114 &8241531568371271274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8073773216853050223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41bf8e56f94559b4a87d5401651a9207, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectRemover
-  _destroyOffset: 20
+  _minRandomDelay: 0
+  _maxRandomDelay: 2
+  _enemyProjectileSpawner: {fileID: -4409757413080913638}
 --- !u!1001 &1424183744227918862
 PrefabInstance:
   m_ObjectHideFlags: 0

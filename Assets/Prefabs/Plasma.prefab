@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6548295300470795615}
   - component: {fileID: 4777473993935389323}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlasmaView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,8 +103,7 @@ GameObject:
   - component: {fileID: 7696091957184536558}
   - component: {fileID: 660765956431514769}
   - component: {fileID: 836351238740039466}
-  - component: {fileID: -6040994646867545327}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Plasma
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,20 +201,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e2f9e3253023c44bf8f1fdf39b0964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
   _targetLayer:
     serializedVersion: 2
     m_Bits: 512
---- !u!114 &-6040994646867545327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8152951949174622031}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41bf8e56f94559b4a87d5401651a9207, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectRemover
-  _destroyOffset: 20
+  _ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 3328
+  _speed: 10

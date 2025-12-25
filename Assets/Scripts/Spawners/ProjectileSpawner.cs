@@ -1,18 +1,34 @@
 using UnityEngine;
 
-public class ProjectileSpawner : MonoBehaviour
+public class ProjectileSpawner : Spawner<Projectile>
 {
-    [SerializeField] private ProjectilePool _projectilePool; 
-    
-    public Projectile SpawnProjectile(Vector3 position, Vector2 direction, Quaternion rotation)
+    public override Projectile SpawnObject(Vector3 position, Vector2 direction, Quaternion rotation)
     {
-        if (_projectilePool == null)
+        if (ObjectPool == null)
             return null;
         
-        Projectile projectile = _projectilePool.GetObject();
+        Projectile projectile = ObjectPool.GetObject();
         
-        projectile.Initialize(position, direction, rotation);
+        if (projectile != null)
+            projectile.Initialize(position, direction, rotation);
         
         return projectile;
     }
+    
+    public override void StartSpawning()
+    {
+        IsSpawningActive = true;
+    }
+    
+    public override void StopSpawning()
+    {
+        IsSpawningActive = true;
+    }
+    
+    public Projectile SpawnProjectile(Vector3 position, Vector2 direction, Quaternion rotation)
+    {
+        return SpawnObject(position, direction, rotation);
+    }
+    
+    protected override void InitializeObject(Projectile projectile) { }
 }

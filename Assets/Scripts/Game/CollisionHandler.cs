@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Collider2D))] 
 public class CollisionHandler : MonoBehaviour
 {
     [SerializeField] private Player _player; 
@@ -20,7 +21,7 @@ public class CollisionHandler : MonoBehaviour
         }
         else if (other.TryGetComponent(out Projectile projectile))
         {
-            if (projectile.IsOwnedByPlayer() == false && _player != null)
+            if (_player != null)
                 _player.Destroy();
         }
     }

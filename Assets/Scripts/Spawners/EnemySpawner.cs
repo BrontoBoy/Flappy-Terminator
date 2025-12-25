@@ -7,23 +7,12 @@ public class EnemySpawner : Spawner<Enemy>
     [SerializeField] private float _spawnDistanceFromPlayer = DefaultSpawnDistanceFromPlayer;
     [SerializeField] private Player _player;
     
-    public void ReturnAllObjects()
+    protected override bool CanSpawn()
     {
-        if (ObjectPool != null)
-            ObjectPool.ReturnAll();
-    }
-    
-    protected override void Spawn()
-    {
-        if (CanSpawn() == false)
-            return;
+        bool baseCanSpawn = base.CanSpawn();
+        bool isPlayerSet = _player != null;
         
-        Enemy enemy = CreateEnemy();
-        Vector3 spawnPosition = GetRandomSpawnPosition();
-        enemy.transform.position = spawnPosition;
-        
-        InitializeEnemy(enemy);
-        NotifyEnemySpawned(enemy);
+        return baseCanSpawn && isPlayerSet;
     }
     
     protected override Vector3 GetRandomSpawnPosition()
@@ -31,45 +20,13 @@ public class EnemySpawner : Spawner<Enemy>
         if (_player == null)
             return base.GetRandomSpawnPosition(); 
         
-        return CalculateEnemySpawnPosition();
-    }
-    
-    private bool CanSpawn()
-    {
-        bool isObjectPoolSet = ObjectPool != null;
-        bool isPlayerSet = _player != null;
-        bool areSettingsValid = AreSpawnSettingsValid();
-        
-        return isObjectPoolSet && isPlayerSet && areSettingsValid;
-    }
-    
-    private Enemy CreateEnemy()
-    {
-        Enemy enemy = ObjectPool.GetObject();
-        
-        if (enemy == null)
-            return null;
-        
-        return enemy;
-    }
-    
-    private Vector3 CalculateEnemySpawnPosition()
-    {
         float spawnX = CalculateSpawnXPosition();
         float randomY = GetRandomYPosition();
         
         return new Vector3(spawnX, randomY, ZeroFloatValue);
     }
     
-    private float CalculateSpawnXPosition()
-    {
-        if (_player == null)
-            return SpawnX;
-        
-        return _player.transform.position.x + _spawnDistanceFromPlayer;
-    }
-    
-    private void InitializeEnemy(Enemy enemy)
+    protected override void InitializeObject(Enemy enemy)
     {
         if (enemy == null)
             return;
@@ -82,11 +39,11 @@ public class EnemySpawner : Spawner<Enemy>
         enemy.Initialize(enemyPool);
     }
     
-    private void NotifyEnemySpawned(Enemy enemy)
+    private float CalculateSpawnXPosition()
     {
-        if (enemy == null)
-            return;
+        if (_player == null)
+            return SpawnX;
         
-        ObjectSpawned?.Invoke(enemy);
+        return _player.transform.position.x + _spawnDistanceFromPlayer;
     }
 }

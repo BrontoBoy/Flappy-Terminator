@@ -83,7 +83,6 @@ public class Game : MonoBehaviour
         if (_enemySpawner != null)
         {
             _enemySpawner.ReturnAllObjects();
-            _enemySpawner.StopSpawning();
             _enemySpawner.StartSpawning();
         }
         

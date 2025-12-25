@@ -5,10 +5,14 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class Enemy : MonoBehaviour, IDestructible, IInteractable
 {
+    private const float ZeroVelocityY = 0f;
+    
     [SerializeField] private float _moveSpeed = 3f;
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private float _shootCooldown = 2f;
-    [SerializeField] private ProjectilePool _enemyProjectilePool;
+    [SerializeField] private float _minRandomDelay = 0f;
+    [SerializeField] private float _maxRandomDelay = 2f;
+    [SerializeField] private Spawner<Projectile> _enemyProjectileSpawner;
     
     private float _timeSinceLastShot;
     private Rigidbody2D _rigidbody;
@@ -28,7 +32,7 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     
     private void OnEnable()
     {
-        _timeSinceLastShot = Random.Range(0f, _shootCooldown);
+        _timeSinceLastShot = Random.Range(_minRandomDelay, _maxRandomDelay);
         _isScoreAlreadyAdded = false;
     }
     
@@ -39,7 +43,7 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     
     private void FixedUpdate()
     {
-        _rigidbody.linearVelocity = new Vector2(-_moveSpeed, 0);
+        _rigidbody.linearVelocity = new Vector2(-_moveSpeed, ZeroVelocityY);
     }
     
     public void Initialize(EnemyPool enemyPool)
@@ -59,7 +63,10 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
             return;
         
         _isScoreAlreadyAdded = true;
+        
         DestroyedByPlayer?.Invoke(this);
+        
+        Destroy();
     }
     
     public void Destroy()
@@ -88,16 +95,18 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     
     private void Shoot()
     {
-        if (_enemyProjectilePool == null || _attackPoint == null) 
+        if (_enemyProjectileSpawner == null || _attackPoint == null) 
             return;
         
-        Projectile projectile = _enemyProjectilePool.GetObject();
+        Projectile projectile = _enemyProjectileSpawner.SpawnObject(_attackPoint.position, Vector2.left, Quaternion.identity);
         
         if (projectile == null)
             return;
-
-        projectile.Pool = _enemyProjectilePool;
-        projectile.Initialize(_attackPoint.position, Vector2.left, Quaternion.identity);
-        projectile.SetOwner(gameObject);
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.TryGetComponent(out Projectile projectile))
+            MarkAsDestroyedByPlayer();
     }
 }
