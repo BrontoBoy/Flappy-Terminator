@@ -7,6 +7,13 @@ public class EnemySpawner : Spawner<Enemy>
     [SerializeField] private float _spawnDistanceFromPlayer = DefaultSpawnDistanceFromPlayer;
     [SerializeField] private Player _player;
     
+    protected override void InitializeObject(Enemy enemy, Vector2 direction = default)
+    {
+        base.InitializeObject(enemy, direction);
+        
+        enemy.DestroyedByPlayer += OnEnemyDestroyedByPlayer;
+    }
+    
     protected override bool CanSpawn()
     {
         bool baseCanSpawn = base.CanSpawn();
@@ -23,7 +30,7 @@ public class EnemySpawner : Spawner<Enemy>
         float spawnX = CalculateSpawnXPosition();
         float randomY = GetRandomYPosition();
         
-        return new Vector3(spawnX, randomY, ZeroFloatValue);
+        return new Vector3(spawnX, randomY, ZeroZValue);
     }
     
     private float CalculateSpawnXPosition()
@@ -32,5 +39,13 @@ public class EnemySpawner : Spawner<Enemy>
             return SpawnX;
         
         return _player.transform.position.x + _spawnDistanceFromPlayer;
+    }
+    
+    private void OnEnemyDestroyedByPlayer(Enemy enemy)
+    {
+        enemy.DestroyedByPlayer -= OnEnemyDestroyedByPlayer;
+        
+        if (ObjectPool != null)
+            ObjectPool.ReturnObject(enemy);
     }
 }

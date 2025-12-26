@@ -1,8 +1,9 @@
 using UnityEngine;
+using System.Collections;
 
 public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehaviour
 {
-    protected const float ZeroFloatValue = 0f;
+    protected const float ZeroZValue = 0f;
     
     private const float DefaultSpawnCooldown = 2f;
     private const float DefaultMinSpawnHeight = -2f;
@@ -16,8 +17,9 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     [SerializeField] protected GameObjectPool<T> ObjectPool;
     [SerializeField] protected bool UseAutoSpawn = true;
     
-    protected float TimeSinceLastSpawn;
     protected bool IsSpawningActive = false;
+    
+    private Coroutine _spawningCoroutine;
     
     public System.Action<T> ObjectSpawned { get; set; }
 
@@ -26,29 +28,30 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
         Initialize();
     }
     
-    protected virtual void Update()
-    {
-        if (IsSpawningActive == false|| UseAutoSpawn == false || ObjectPool == null)
-            return;
-        
-        UpdateSpawnTimer();
-    }
-    
     public virtual void Initialize()
     {
-        TimeSinceLastSpawn = ZeroFloatValue;
-        IsSpawningActive = false;
+        StopSpawning();
     }
     
     public virtual void StartSpawning()
     {
+        if (UseAutoSpawn == false || ObjectPool == null || IsSpawningActive)
+            return;
+        
         IsSpawningActive = true;
-        TimeSinceLastSpawn = SpawnRate;
+        
+        _spawningCoroutine = StartCoroutine(SpawnRoutine());
     }
     
     public virtual void StopSpawning()
     {
         IsSpawningActive = false;
+        
+        if (_spawningCoroutine != null)
+        {
+            StopCoroutine(_spawningCoroutine);
+            _spawningCoroutine = null;
+        }
     }
     
     public void ReturnAllObjects()
@@ -57,30 +60,36 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
             ObjectPool.ReturnAll();
     }
     
-    public virtual T SpawnObject(Vector3 position, Vector2 direction, Quaternion rotation)
+    public virtual T SpawnAtPosition(Vector3 position, Vector2 direction, Quaternion rotation)
     {
-        if (ObjectPool == null || IsSpawningActive == false)
+        if (ObjectPool == null)
             return null;
         
-        T gameObject = ObjectPool.GetObject();
+        T spawnedObject = ObjectPool.GetObject();
         
-        if (gameObject is Projectile projectile)
-            projectile.Initialize(position, direction, rotation);
+        if (spawnedObject != null)
+        {
+            spawnedObject.transform.position = position;
+            spawnedObject.transform.rotation = rotation;
+            
+            InitializeObject(spawnedObject, direction);
+            NotifyObjectSpawned(spawnedObject);
+        }
         
-        return gameObject;
+        return spawnedObject;
     }
     
-    protected virtual void Spawn()
+    protected virtual void SpawnAutomatically()
     {
         if (CanSpawn() == false)
             return;
         
-        T gameObject = CreateObject();
+        T spawnedObject = CreateObject();
         Vector3 spawnPosition = GetRandomSpawnPosition();
-        gameObject.transform.position = spawnPosition;
+        spawnedObject.transform.position = spawnPosition;
         
-        InitializeObject(gameObject);
-        NotifyObjectSpawned(gameObject);
+        InitializeObject(spawnedObject);
+        NotifyObjectSpawned(spawnedObject);
     }
     
     protected virtual T CreateObject()
@@ -88,11 +97,11 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
         return ObjectPool.GetObject();
     }
     
-    protected virtual void InitializeObject(T gameObject) { }
+    protected virtual void InitializeObject(T gameObject, Vector2 direction = default) { }
     
-    protected virtual void NotifyObjectSpawned(T gameObject)
+    protected virtual void NotifyObjectSpawned(T spawnedObject)
     {
-        ObjectSpawned?.Invoke(gameObject);
+        ObjectSpawned?.Invoke(spawnedObject);
     }
     
     protected virtual bool CanSpawn()
@@ -104,7 +113,7 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     {
         float randomY = GetRandomYPosition();
         
-        return new Vector3(SpawnX, randomY, ZeroFloatValue);
+        return new Vector3(SpawnX, randomY, ZeroZValue);
     }
     
     protected float GetRandomYPosition()
@@ -115,20 +124,20 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
     protected bool AreSpawnSettingsValid()
     {
         bool isMinYValid = MinY < MaxY;
-        bool isSpawnRateValid = SpawnRate > ZeroFloatValue;
+        bool isSpawnRateValid = SpawnRate > ZeroZValue;
         bool isObjectPoolSet = ObjectPool != null;
         
         return isMinYValid && isSpawnRateValid && isObjectPoolSet;
     }
     
-    private void UpdateSpawnTimer()
+    private IEnumerator SpawnRoutine()
     {
-        TimeSinceLastSpawn += Time.deltaTime;
-        
-        if (TimeSinceLastSpawn >= SpawnRate) 
+        while (IsSpawningActive && UseAutoSpawn && ObjectPool != null)
         {
-            Spawn();
-            TimeSinceLastSpawn = ZeroFloatValue;
+            if (CanSpawn())
+                SpawnAutomatically();
+                
+            yield return new WaitForSeconds(SpawnRate);
         }
     }
 }

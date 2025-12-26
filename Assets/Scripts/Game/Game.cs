@@ -63,12 +63,13 @@ public class Game : MonoBehaviour
     
     private void OnEnemySpawned(Enemy enemy)
     {
-        enemy.DestroyedByPlayer -= OnEnemyDestroyedByPlayer;
         enemy.DestroyedByPlayer += OnEnemyDestroyedByPlayer;
     }
     
     private void OnEnemyDestroyedByPlayer(Enemy enemy)
     {
+        enemy.DestroyedByPlayer -= OnEnemyDestroyedByPlayer;
+        
         if (_scoreCounter != null)
             _scoreCounter.Add();
     }

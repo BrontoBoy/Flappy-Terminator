@@ -16,7 +16,7 @@ public class Attacker : MonoBehaviour
         if (_projectileSpawner == null || _attackPoint == null)
             return;
         
-        Projectile projectile = _projectileSpawner.SpawnObject(_attackPoint.position, _attackPoint.right, _attackPoint.rotation);
+        Projectile projectile = _projectileSpawner.SpawnAtPosition(_attackPoint.position, _attackPoint.right, _attackPoint.rotation);
         
         _lastAttackTime = Time.time;
     }

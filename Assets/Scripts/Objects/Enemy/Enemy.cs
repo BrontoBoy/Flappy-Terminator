@@ -16,8 +16,6 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     
     private float _timeSinceLastShot;
     private Rigidbody2D _rigidbody;
-    private EnemyPool _enemyPool;
-    private bool _isScoreAlreadyAdded = false;
     
     public event Action<Enemy> DestroyedByPlayer;
     
@@ -33,7 +31,6 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
     private void OnEnable()
     {
         _timeSinceLastShot = Random.Range(_minRandomDelay, _maxRandomDelay);
-        _isScoreAlreadyAdded = false;
     }
     
     private void Update()
@@ -46,39 +43,14 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         _rigidbody.linearVelocity = new Vector2(-_moveSpeed, ZeroVelocityY);
     }
     
-    public void Initialize(EnemyPool enemyPool)
-    {
-        if (enemyPool == null) 
-            return;
-        
-        _enemyPool = enemyPool;
-    }
-    
     public void MarkAsDestroyedByPlayer()
     {
-        if (gameObject.activeInHierarchy == false) 
-            return;
-        
-        if (_isScoreAlreadyAdded) 
-            return;
-        
-        _isScoreAlreadyAdded = true;
-        
         DestroyedByPlayer?.Invoke(this);
-        
-        Destroy();
     }
     
     public void Destroy()
     {
-        if (_enemyPool != null)
-        {
-            _enemyPool.ReturnObject(this);
-        }
-        else
-        {
             gameObject.SetActive(false);
-        }
     }
     
     private void TryShoot()
@@ -98,6 +70,6 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         if (_enemyProjectileSpawner == null || _attackPoint == null) 
             return;
         
-        Projectile projectile = _enemyProjectileSpawner.SpawnObject(_attackPoint.position, Vector2.left, Quaternion.identity);
+        Projectile projectile = _enemyProjectileSpawner.SpawnAtPosition(_attackPoint.position, Vector2.left, Quaternion.identity);
     }
 }

@@ -18,11 +18,6 @@ public class Player : MonoBehaviour, IDestructible
 
     public event Action GameOver;
     
-    private void OnEnable()
-    {
-        _handler.CollisionDetected += ProcessCollision;
-    }
-    
     private void Awake()
     {
         _inputReader = GetComponent<InputReader>();
@@ -30,6 +25,11 @@ public class Player : MonoBehaviour, IDestructible
         _attacker = GetComponent<Attacker>();
         _scoreCounter = GetComponent<ScoreCounter>();
         _handler = GetComponent<CollisionHandler>();
+    }
+    
+    private void OnEnable()
+    {
+        _handler.CollisionDetected += ProcessCollision;
     }
     
     private void OnDisable()

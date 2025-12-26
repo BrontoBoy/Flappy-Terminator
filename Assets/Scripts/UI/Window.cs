@@ -6,8 +6,8 @@ public abstract class Window : MonoBehaviour
     protected const float VisibleAlpha = 1f;
     protected const float HiddenAlpha = 0f;
     
-    [SerializeField] private CanvasGroup _windowGroup;
     [SerializeField] protected Button ActionButton;
+    [SerializeField] private CanvasGroup _windowGroup;
 
     protected CanvasGroup WindowGroup => _windowGroup;
 

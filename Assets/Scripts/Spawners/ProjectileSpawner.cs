@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class ProjectileSpawner : Spawner<Projectile>
 {
@@ -8,18 +9,14 @@ public class ProjectileSpawner : Spawner<Projectile>
         UseAutoSpawn = false;
     }
     
-    public override Projectile SpawnObject(Vector3 position, Vector2 direction, Quaternion rotation)
+    protected override void InitializeObject(Projectile projectile, Vector2 direction = default)
     {
-        if (ObjectPool == null)
-            return null;
-        
-        Projectile projectile = ObjectPool.GetObject();
-        
         if (projectile != null)
-            projectile.Initialize(position, direction, rotation);
-        
-        return projectile;
+            projectile.Initialize(projectile.transform.position, direction, projectile.transform.rotation);
     }
     
-    protected override void InitializeObject(Projectile projectile) { }
+    protected override void NotifyObjectSpawned(Projectile projectile)
+    {
+        base.NotifyObjectSpawned(projectile);
+    }
 }
