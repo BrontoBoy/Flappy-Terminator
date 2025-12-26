@@ -15,11 +15,12 @@ public class Game : MonoBehaviour
     
     private List<ISpawner> _spawners = new List<ISpawner>();
     
-    private void Start()
+    private void OnEnable()
     {
-        Time.timeScale = PausedTimeScale;
-        _startScreen.Open();
-
+        _startScreen.PlayButtonClicked += OnPlayButtonClick;
+        _endGameScreen.RestartButtonClicked += OnRestartButtonClick;
+        _player.GameOver += OnGameOver;
+        
         _spawners.Clear();
         
         if (_enemySpawner != null)
@@ -33,23 +34,20 @@ public class Game : MonoBehaviour
             if (spawner != null)
                 spawner.Initialize();
         }
-    }
-    
-   private void OnEnable()
-    {
-        _startScreen.PlayButtonClicked += OnPlayButtonClick;
-        _endGameScreen.RestartButtonClicked += OnRestartButtonClick;
-        _player.GameOver += OnGameOver;
         
         foreach (ISpawner spawner in _spawners)
         {
             if (spawner is EnemySpawner enemySpawner)
-            {
                 enemySpawner.ObjectSpawned += OnEnemySpawned;
-            }
         }
     }
-
+    
+    private void Start()
+    {
+        Time.timeScale = PausedTimeScale;
+        _startScreen.Open();
+    }
+    
     private void OnDisable()
     {
         _startScreen.PlayButtonClicked -= OnPlayButtonClick;
@@ -59,14 +57,13 @@ public class Game : MonoBehaviour
         foreach (ISpawner spawner in _spawners)
         {
             if (spawner is EnemySpawner enemySpawner)
-            {
                 enemySpawner.ObjectSpawned -= OnEnemySpawned;
-            }
         }
     }
     
     private void OnEnemySpawned(Enemy enemy)
     {
+        enemy.DestroyedByPlayer -= OnEnemyDestroyedByPlayer;
         enemy.DestroyedByPlayer += OnEnemyDestroyedByPlayer;
     }
     
@@ -113,9 +110,7 @@ public class Game : MonoBehaviour
                 spawner.ReturnAllObjects();
                 
                 if (spawner is EnemySpawner)
-                {
                     spawner.StartSpawning();
-                }
             }
         }
         

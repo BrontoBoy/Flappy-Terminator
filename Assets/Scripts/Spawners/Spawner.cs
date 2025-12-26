@@ -65,9 +65,7 @@ public abstract class Spawner<T> : MonoBehaviour, ISpawner where T : MonoBehavio
         T gameObject = ObjectPool.GetObject();
         
         if (gameObject is Projectile projectile)
-        {
             projectile.Initialize(position, direction, rotation);
-        }
         
         return gameObject;
     }

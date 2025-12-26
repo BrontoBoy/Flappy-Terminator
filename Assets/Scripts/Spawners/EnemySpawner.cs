@@ -26,36 +26,11 @@ public class EnemySpawner : Spawner<Enemy>
         return new Vector3(spawnX, randomY, ZeroFloatValue);
     }
     
-    private void InitializeObject(Enemy enemy)
-    {
-        if (enemy == null)
-            return;
-        
-        EnemyPool enemyPool = ObjectPool as EnemyPool;
-        
-        if (enemyPool == null)
-            return;
-        
-        enemy.Initialize(enemyPool);
-        
-        NotifyObjectSpawned(enemy);
-        
-        enemy.DestroyedByPlayer += OnEnemyDestroyed;
-    }
-    
     private float CalculateSpawnXPosition()
     {
         if (_player == null)
             return SpawnX;
         
         return _player.transform.position.x + _spawnDistanceFromPlayer;
-    }
-    
-    private void OnEnemyDestroyed(Enemy enemy)
-    {
-        if (enemy != null)
-        {
-            enemy.DestroyedByPlayer -= OnEnemyDestroyed;
-        }
     }
 }

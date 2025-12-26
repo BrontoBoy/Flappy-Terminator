@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class ScoreCounter : MonoBehaviour
 {
-    private const int InitialScore = 0;
-    
     private int _scoreValue;
     private int _scoreStartValue = 0;
 

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public abstract class Window : MonoBehaviour
@@ -25,7 +24,9 @@ public abstract class Window : MonoBehaviour
     }
     
     public abstract void Open();
+    
     public abstract void Close();
+    
     protected abstract void OnButtonClick();
 
     protected void ShowWindow()

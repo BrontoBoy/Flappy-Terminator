@@ -100,10 +100,4 @@ public class Enemy : MonoBehaviour, IDestructible, IInteractable
         
         Projectile projectile = _enemyProjectileSpawner.SpawnObject(_attackPoint.position, Vector2.left, Quaternion.identity);
     }
-    
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.TryGetComponent(out Projectile projectile))
-            MarkAsDestroyedByPlayer();
-    }
 }
